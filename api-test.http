@@ -1,0 +1,59 @@
+@baseUrl = http://localhost:3000
+@taskId = cd8473b2-5b02-47bf-8e07-4c1ca58a87e5
+
+### 1) Create Task
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+
+{
+  "title": "REST Client Test Task",
+  "description": "Created from VS Code REST Client"
+}
+
+### 2) Get All Tasks
+GET {{baseUrl}}/tasks
+
+### 3) Get Tasks with Filter + Sort (Bonus)
+GET {{baseUrl}}/tasks?status=pending&sort=createdAt
+
+### 4) Get Task By ID
+GET {{baseUrl}}/tasks/{{taskId}}
+
+### 5) Update Task
+PUT {{baseUrl}}/tasks/{{taskId}}
+Content-Type: application/json
+
+{
+  "title": "REST Client Updated Title",
+  "description": "Updated using REST Client"
+}
+
+### 6) Mark Task Done
+PATCH {{baseUrl}}/tasks/{{taskId}}/done
+
+### 7) Mark Task Done Again (Should return 400)
+PATCH {{baseUrl}}/tasks/{{taskId}}/done
+
+### 8) Delete Task
+DELETE {{baseUrl}}/tasks/{{taskId}}
+
+### 9) Empty Title Error (Should return 400)
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+
+{
+  "title": "   "
+}
+
+### 10) Not Found Error (Should return 404)
+GET {{baseUrl}}/tasks/not-real-id
+
+### 11) Method Not Allowed (Should return 405)
+PATCH {{baseUrl}}/tasks
+
+### 12) Invalid JSON (Should return 400)
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+
+{
+  "title": "Invalid JSON"
