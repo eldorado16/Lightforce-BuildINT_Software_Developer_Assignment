@@ -1,245 +1,138 @@
 # Task Manager REST API
 
-A production-style Task Manager REST API built with Node.js and Express.js for a developer assignment. It uses an in-memory array for storage and includes robust validation, consistent JSON responses, and centralized error handling.
+## 1. Project Overview
 
-## Tech Stack
+A RESTful Task Manager API built with Node.js and Express.js. The API allows users to create, read, update, and delete tasks. All data is stored in-memory (no database required).
 
-- Node.js
-- Express.js
-- JavaScript (ES6+)
-- In-memory data store
-- UUID for ID generation
+### Tech Stack
 
-## Installation and Run
+- Runtime: Node.js
+- Framework: Express.js
+- ID Generation: UUID v4
+- Storage: In-memory array (no database)
 
-1. Open terminal in the project root:
+## 2. How to Run the Project
+
+### Prerequisites
+
+- Node.js v16 or higher
+- npm (comes with Node.js)
+
+### Setup Steps
+
+Step 1 - Clone the repository:
 
 ```bash
-cd task-manager-api
+git clone https://github.com/eldorado16/Lightforce-BuildINT_Software_Developer_Assignment.git
+cd Lightforce-BuildINT_Software_Developer_Assignment
 ```
 
-2. Install dependencies:
+Step 2 - Install dependencies:
 
 ```bash
 npm install
 ```
 
-3. Start the server:
+Step 3 - Start the server:
 
 ```bash
 npm start
 ```
 
-4. Server runs on:
+Step 4 - Server will be running at:
 
 ```text
 http://localhost:3000
 ```
 
-## Data Model
+## 3. API Endpoints
 
-```json
-{
-  "id": "auto-generated unique string",
-  "title": "string (required)",
-  "description": "string (optional, default: '')",
-  "status": "pending | done",
-  "createdAt": "ISO timestamp string"
-}
-```
+Base URL: `http://localhost:3000`
 
-## API Endpoints with curl Examples
+| Method | Endpoint | Status Code | Description |
+| --- | --- | --- | --- |
+| POST | /tasks | 201 Created | Create a new task |
+| GET | /tasks | 200 OK | Get all tasks |
+| GET | /tasks/:id | 200 OK | Get a single task by ID |
+| PUT | /tasks/:id | 200 OK | Update task title or description |
+| PATCH | /tasks/:id/done | 200 OK | Mark a task as completed |
+| DELETE | /tasks/:id | 200 OK | Delete a task |
 
-### 1. Create Task
+## 4. Example Requests (curl)
 
-- Endpoint: `POST /tasks`
+### POST /tasks - Create a Task
 
 ```bash
 curl -X POST http://localhost:3000/tasks \
   -H "Content-Type: application/json" \
-  -d '{"title":"Finish assignment","description":"Implement all endpoints"}'
+  -d '{"title": "Buy groceries", "description": "Milk, eggs, bread"}'
 ```
 
-Sample request body:
+Response (201):
 
 ```json
 {
-  "title": "Finish assignment",
-  "description": "Implement all endpoints"
-}
-```
-
-Sample success response (201):
-
-```json
-{
-  "id": "d7d9db2e-0a87-4c31-9acd-74e4974af0a7",
-  "title": "Finish assignment",
-  "description": "Implement all endpoints",
+  "id": "a3f9c1d2-4b5e-...",
+  "title": "Buy groceries",
+  "description": "Milk, eggs, bread",
   "status": "pending",
-  "createdAt": "2026-04-13T12:30:12.000Z"
+  "createdAt": "2024-01-15T10:30:00.000Z"
 }
 ```
 
-Sample error response (400):
-
-```json
-{
-  "error": "Title is required"
-}
-```
-
-### 2. Get All Tasks
-
-- Endpoint: `GET /tasks`
-- Bonus filters:
-  - `GET /tasks?status=pending`
-  - `GET /tasks?status=done`
-  - `GET /tasks?sort=createdAt` (newest first)
+### GET /tasks - Get All Tasks
 
 ```bash
 curl http://localhost:3000/tasks
 ```
 
-```bash
-curl "http://localhost:3000/tasks?status=pending&sort=createdAt"
-```
+Response (200): Array of all task objects
 
-Sample success response (200):
-
-```json
-[
-  {
-    "id": "d7d9db2e-0a87-4c31-9acd-74e4974af0a7",
-    "title": "Finish assignment",
-    "description": "Implement all endpoints",
-    "status": "pending",
-    "createdAt": "2026-04-13T12:30:12.000Z"
-  }
-]
-```
-
-### 3. Get Task by ID
-
-- Endpoint: `GET /tasks/:id`
+### GET /tasks/:id - Get One Task
 
 ```bash
-curl http://localhost:3000/tasks/d7d9db2e-0a87-4c31-9acd-74e4974af0a7
+curl http://localhost:3000/tasks/a3f9c1d2-4b5e-...
 ```
 
-Sample success response (200):
+Response (200): Single task object | 404 if not found
 
-```json
-{
-  "id": "d7d9db2e-0a87-4c31-9acd-74e4974af0a7",
-  "title": "Finish assignment",
-  "description": "Implement all endpoints",
-  "status": "pending",
-  "createdAt": "2026-04-13T12:30:12.000Z"
-}
-```
-
-Sample error response (404):
-
-```json
-{
-  "error": "Task not found"
-}
-```
-
-### 4. Update Task
-
-- Endpoint: `PUT /tasks/:id`
+### PUT /tasks/:id - Update a Task
 
 ```bash
-curl -X PUT http://localhost:3000/tasks/d7d9db2e-0a87-4c31-9acd-74e4974af0a7 \
+curl -X PUT http://localhost:3000/tasks/a3f9c1d2-4b5e-... \
   -H "Content-Type: application/json" \
-  -d '{"title":"Finish assignment v2","description":"Updated details"}'
+  -d '{"title": "Buy groceries and fruits"}'
 ```
 
-Sample request body:
+Response (200): Updated task object
 
-```json
-{
-  "title": "Finish assignment v2",
-  "description": "Updated details"
-}
-```
-
-Sample success response (200):
-
-```json
-{
-  "id": "d7d9db2e-0a87-4c31-9acd-74e4974af0a7",
-  "title": "Finish assignment v2",
-  "description": "Updated details",
-  "status": "pending",
-  "createdAt": "2026-04-13T12:30:12.000Z"
-}
-```
-
-Sample error response (400):
-
-```json
-{
-  "error": "Request body must include title or description"
-}
-```
-
-### 5. Mark Task as Done
-
-- Endpoint: `PATCH /tasks/:id/done`
+### PATCH /tasks/:id/done - Mark as Done
 
 ```bash
-curl -X PATCH http://localhost:3000/tasks/d7d9db2e-0a87-4c31-9acd-74e4974af0a7/done
+curl -X PATCH http://localhost:3000/tasks/a3f9c1d2-4b5e-.../done
 ```
 
-Sample success response (200):
+Response (200): Task with status set to `done`
 
-```json
-{
-  "id": "d7d9db2e-0a87-4c31-9acd-74e4974af0a7",
-  "title": "Finish assignment v2",
-  "description": "Updated details",
-  "status": "done",
-  "createdAt": "2026-04-13T12:30:12.000Z"
-}
-```
-
-Sample error response (400):
-
-```json
-{
-  "error": "Task is already completed"
-}
-```
-
-### 6. Delete Task
-
-- Endpoint: `DELETE /tasks/:id`
+### DELETE /tasks/:id - Delete a Task
 
 ```bash
-curl -X DELETE http://localhost:3000/tasks/d7d9db2e-0a87-4c31-9acd-74e4974af0a7
+curl -X DELETE http://localhost:3000/tasks/a3f9c1d2-4b5e-...
 ```
 
-Sample success response (200):
+Response (200): `{ "message": "Task deleted successfully" }`
+
+## 5. Error Handling
+
+All error responses are returned as JSON in the following format:
 
 ```json
-{
-  "message": "Task deleted successfully"
-}
+{ "error": "descriptive error message" }
 ```
 
-Sample error response (404):
-
-```json
-{
-  "error": "Task not found"
-}
-```
-
-## Additional Notes
-
-- All success and error responses are JSON.
-- Invalid JSON payloads return `400` with a clear error.
-- Unsupported HTTP methods on valid task routes return `405`.
+| Status Code | When it occurs |
+| --- | --- |
+| 400 Bad Request | Missing required fields, empty title, or task already completed |
+| 404 Not Found | Task ID does not exist in the system |
+| 405 Method Not Allowed | Unsupported HTTP method used on a valid route |
+| 500 Server Error | Unexpected internal server error |
